@@ -70,7 +70,6 @@ function renderCards(repos) {
           </div>
 
           <h3 class="repo-title">${repo.name}</h3>
-          <p class="repo-description">${repo.description}</p>
 
           <div class="metric-grid">
             <div class="metric-tile">
