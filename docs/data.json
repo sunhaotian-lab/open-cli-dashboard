@@ -1,6 +1,6 @@
 {
   "mode": "static",
-  "fetchedAt": "2026-03-30T12:06:54.023Z",
+  "fetchedAt": "2026-03-30T12:12:39.100Z",
   "refreshIntervalMs": 3600000,
   "source": "GitHub repository pages",
   "repos": [
@@ -13,7 +13,7 @@
       "url": "https://github.com/larksuite/cli",
       "accent": "#00C3FF",
       "description": "Lark/Feishu Open Platform CLI",
-      "stars": 4409,
+      "stars": 4411,
       "issues": 48,
       "prs": 27,
       "openConversations": 75,
@@ -45,16 +45,16 @@
       "url": "https://github.com/WecomTeam/wecom-cli",
       "accent": "#07C160",
       "description": "Enterprise WeChat command line interface",
-      "stars": 737,
+      "stars": 742,
       "issues": 12,
       "prs": 1,
       "openConversations": 13,
-      "heat": 29.9,
-      "starsLabel": "737"
+      "heat": 30,
+      "starsLabel": "742"
     }
   ],
   "summary": {
-    "totalStars": 6426,
+    "totalStars": 6433,
     "totalIssues": 74,
     "totalPrs": 31,
     "totalRepos": 3,
@@ -63,12 +63,12 @@
   },
   "history": [
     {
-      "timestamp": "2026-03-30T12:06:54.023Z",
+      "timestamp": "2026-03-30T12:12:39.100Z",
       "repos": [
         {
           "id": "feishu",
           "label": "飞书",
-          "stars": 4409,
+          "stars": 4411,
           "issues": 48,
           "prs": 27
         },
@@ -82,7 +82,7 @@
         {
           "id": "wecom",
           "label": "企微",
-          "stars": 737,
+          "stars": 742,
           "issues": 12,
           "prs": 1
         }
@@ -90,7 +90,7 @@
     }
   ],
   "starHistory": {
-    "fetchedAt": "2026-03-30T12:06:56.717Z",
+    "fetchedAt": "2026-03-30T12:12:41.972Z",
     "refreshIntervalMs": 43200000,
     "source": "star-history.com",
     "sourceUrl": "https://api.star-history.com/svg?repos=larksuite%2Fcli%2Cdingtalk-real-ai%2Fdingtalk-workspace-cli%2Cwecomteam%2Fwecom-cli&type=Date",
