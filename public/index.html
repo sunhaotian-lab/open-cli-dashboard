@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>开放平台 CLI 实时看板</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="page-backdrop page-backdrop-left"></div>
+      <div class="page-backdrop page-backdrop-right"></div>
+
+      <main class="layout">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Open Platform Observability</p>
+            <h1>飞书、钉钉、企微 CLI 实时看板</h1>
+            <p class="hero-text">
+              服务端直接抓取 GitHub 仓库页面，追踪这 3 个开源 CLI 的
+              <strong>Stars</strong>、<strong>Open Issues</strong> 和
+              <strong>Open PRs</strong>。
+            </p>
+          </div>
+
+          <div class="hero-actions">
+            <button id="refreshButton" class="action-button" type="button">立即刷新</button>
+            <label class="toggle">
+              <input id="autoRefresh" type="checkbox" checked />
+              <span>自动刷新</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="status-strip">
+          <div>
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText">正在加载数据...</span>
+          </div>
+          <div class="mono" id="sourceText">数据源加载中</div>
+        </section>
+
+        <section class="curve-panel">
+          <div class="panel-header curve-header">
+            <div>
+              <p class="panel-kicker">Stars Trend</p>
+              <h2>Star数对比曲线</h2>
+              <p class="curve-intro">
+                直接对比三家开源 CLI 的历史 stars 走势，越高表示累计 Star 数越多。
+              </p>
+            </div>
+
+            <div class="curve-tools">
+              <div class="mono" id="curveMeta">历史曲线加载中</div>
+            </div>
+          </div>
+
+          <div class="curve-legend" id="curveLegend"></div>
+
+          <div class="curve-chart-shell">
+            <svg id="curveChart" class="curve-chart" aria-label="Stars 曲线对比图"></svg>
+          </div>
+
+        </section>
+
+        <section class="cards-grid" id="cardsGrid"></section>
+
+        <section class="table-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Snapshot Table</p>
+              <h2>横向对比</h2>
+            </div>
+            <div class="mono" id="updatedAtText">等待首次抓取</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>平台</th>
+                  <th>仓库</th>
+                  <th>Stars</th>
+                  <th>Open Issues</th>
+                  <th>Open PRs</th>
+                  <th>Heat</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="history-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Recent Polling</p>
+              <h2>最近抓取记录</h2>
+            </div>
+            <div class="mono" id="historyHint">保留最近 40 次</div>
+          </div>
+          <div class="history-list" id="historyList"></div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

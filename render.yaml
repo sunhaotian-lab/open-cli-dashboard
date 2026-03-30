@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: open-cli-dashboard
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: PORT
+        value: 10000
