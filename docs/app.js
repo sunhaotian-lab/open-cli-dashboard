@@ -3,8 +3,6 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const cardsGrid = document.querySelector("#cardsGrid");
 const tableBody = document.querySelector("#tableBody");
 const historyList = document.querySelector("#historyList");
-const refreshButton = document.querySelector("#refreshButton");
-const autoRefreshCheckbox = document.querySelector("#autoRefresh");
 const statusText = document.querySelector("#statusText");
 const statusDot = document.querySelector("#statusDot");
 const sourceText = document.querySelector("#sourceText");
@@ -36,6 +34,21 @@ document.body.append(chartSampler);
 
 let autoRefreshTimer = null;
 let latestPayload = null;
+const MONTHS = new Map([
+  ["jan", 1],
+  ["feb", 2],
+  ["mar", 3],
+  ["apr", 4],
+  ["may", 5],
+  ["jun", 6],
+  ["jul", 7],
+  ["aug", 8],
+  ["sep", 9],
+  ["oct", 10],
+  ["nov", 11],
+  ["dec", 12]
+]);
+const WEEKDAYS = new Set(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]);
 
 function formatNumber(value) {
   return new Intl.NumberFormat("en-US").format(value);
@@ -258,6 +271,161 @@ function formatAxisValue(value) {
   return String(value);
 }
 
+function shiftMonth(year, month, delta) {
+  const zeroBased = month - 1 + delta;
+
+  return {
+    year: year + Math.floor(zeroBased / 12),
+    month: ((zeroBased % 12) + 12) % 12 + 1
+  };
+}
+
+function parseHistoryTickLabel(label) {
+  const normalized = label.trim().replace(/\s+/g, " ");
+  const match = normalized.match(/^([A-Za-z]{3})\s+(\d{1,2})$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const token = match[1].toLowerCase();
+  const day = Number.parseInt(match[2], 10);
+
+  if (MONTHS.has(token)) {
+    return {
+      kind: "monthDay",
+      month: MONTHS.get(token),
+      day
+    };
+  }
+
+  if (WEEKDAYS.has(token)) {
+    return {
+      kind: "weekdayDay",
+      day
+    };
+  }
+
+  return null;
+}
+
+function formatMonthDayLabel({ month, day }) {
+  return `${month}/${day}`;
+}
+
+function normalizeHistoryTicks(rawTicks, fetchedAt) {
+  if (!Array.isArray(rawTicks) || rawTicks.length === 0) {
+    return [];
+  }
+
+  const referenceDate = new Date(fetchedAt);
+  const referenceYear = referenceDate.getUTCFullYear();
+  const referenceMonth = referenceDate.getUTCMonth() + 1;
+  const referenceDay = referenceDate.getUTCDate();
+  const parsedTicks = rawTicks.map((tick) => parseHistoryTickLabel(tick.label));
+  const resolvedTicks = new Array(rawTicks.length);
+  const anchorIndex = parsedTicks.findLastIndex((tick) => tick?.kind === "monthDay");
+
+  if (anchorIndex >= 0) {
+    const anchor = parsedTicks[anchorIndex];
+    let anchorYear = referenceYear;
+
+    if (anchor.month - referenceMonth > 6) {
+      anchorYear -= 1;
+    } else if (referenceMonth - anchor.month > 6) {
+      anchorYear += 1;
+    }
+
+    resolvedTicks[anchorIndex] = {
+      year: anchorYear,
+      month: anchor.month,
+      day: anchor.day
+    };
+  } else {
+    const lastTick = parsedTicks.at(-1);
+    resolvedTicks[rawTicks.length - 1] = {
+      year: referenceYear,
+      month: referenceMonth,
+      day: lastTick?.day ?? referenceDay
+    };
+  }
+
+  const seedIndex = resolvedTicks.findIndex(Boolean);
+
+  if (seedIndex === -1) {
+    return rawTicks;
+  }
+
+  for (let index = seedIndex - 1; index >= 0; index -= 1) {
+    const current = parsedTicks[index];
+    const next = resolvedTicks[index + 1];
+
+    if (!current || !next) {
+      continue;
+    }
+
+    if (current.kind === "monthDay") {
+      resolvedTicks[index] = {
+        year: current.month > next.month ? next.year - 1 : next.year,
+        month: current.month,
+        day: current.day
+      };
+      continue;
+    }
+
+    if (current.day > next.day) {
+      resolvedTicks[index] = {
+        ...shiftMonth(next.year, next.month, -1),
+        day: current.day
+      };
+      continue;
+    }
+
+    resolvedTicks[index] = {
+      year: next.year,
+      month: next.month,
+      day: current.day
+    };
+  }
+
+  for (let index = seedIndex + 1; index < rawTicks.length; index += 1) {
+    const current = parsedTicks[index];
+    const previous = resolvedTicks[index - 1];
+
+    if (!current || !previous) {
+      continue;
+    }
+
+    if (current.kind === "monthDay") {
+      resolvedTicks[index] = {
+        year: current.month < previous.month ? previous.year + 1 : previous.year,
+        month: current.month,
+        day: current.day
+      };
+      continue;
+    }
+
+    if (current.day < previous.day) {
+      resolvedTicks[index] = {
+        ...shiftMonth(previous.year, previous.month, 1),
+        day: current.day
+      };
+      continue;
+    }
+
+    resolvedTicks[index] = {
+      year: previous.year,
+      month: previous.month,
+      day: current.day
+    };
+  }
+
+  return rawTicks.map((tick, index) => ({
+    ...tick,
+    label: resolvedTicks[index] ? formatMonthDayLabel(resolvedTicks[index]) : tick.label
+  }));
+}
+
 function transformStarHistorySeries(starHistory, repos) {
   const liveRepoMap = new Map(repos.map((repo) => [repo.id, repo]));
   const rawWidth = starHistory.plot.width;
@@ -321,7 +489,7 @@ function transformStarHistorySeries(starHistory, repos) {
     };
   });
 
-  const xTicks = starHistory.xTicks.map((tick) => ({
+  const xTicks = normalizeHistoryTicks(starHistory.xTicks, starHistory.fetchedAt).map((tick) => ({
     ...tick,
     x: (tick.x / rawWidth) * CHART_PLOT_WIDTH
   }));
@@ -537,15 +705,6 @@ function renderCurveChart(starHistory, repos, starHistoryError) {
   axisLabel.textContent = "Stars";
   plotGroup.append(axisLabel);
 
-  const bottomLabel = createSvgNode("text", {
-    x: plotWidth / 2,
-    y: plotHeight + 30,
-    "text-anchor": "middle",
-    class: "curve-axis-title"
-  });
-  bottomLabel.textContent = "Date";
-  plotGroup.append(bottomLabel);
-
   curveChart.append(plotGroup);
 }
 
@@ -568,11 +727,11 @@ function render(payload) {
   }
 }
 
-async function loadData(force = false) {
-  setStatus(force ? "正在强制刷新..." : "正在同步最新数据...", "loading");
+async function loadData() {
+  setStatus("正在同步最新数据...", "loading");
 
   try {
-    const apiUrl = new URL(force ? "./api/repos?force=1" : "./api/repos", window.location.href);
+    const apiUrl = new URL("./api/repos", window.location.href);
     const staticUrl = new URL("./data.json", window.location.href);
 
     let response = await fetch(apiUrl, { cache: "no-store" });
@@ -598,23 +757,8 @@ async function loadData(force = false) {
   }
 }
 
-function syncAutoRefresh() {
-  if (autoRefreshTimer) {
-    clearInterval(autoRefreshTimer);
-    autoRefreshTimer = null;
-  }
+autoRefreshTimer = setInterval(() => {
+  loadData();
+}, AUTO_REFRESH_MS);
 
-  if (autoRefreshCheckbox.checked) {
-    autoRefreshTimer = setInterval(() => {
-      loadData(false);
-    }, AUTO_REFRESH_MS);
-  }
-}
-
-refreshButton.addEventListener("click", () => {
-  loadData(true);
-});
-
-autoRefreshCheckbox.addEventListener("change", syncAutoRefresh);
-syncAutoRefresh();
-loadData(false);
+loadData();
