@@ -1,6 +1,6 @@
 {
   "mode": "static",
-  "fetchedAt": "2026-03-30T11:48:35.595Z",
+  "fetchedAt": "2026-03-30T12:06:54.023Z",
   "refreshIntervalMs": 3600000,
   "source": "GitHub repository pages",
   "repos": [
@@ -13,11 +13,11 @@
       "url": "https://github.com/larksuite/cli",
       "accent": "#00C3FF",
       "description": "Lark/Feishu Open Platform CLI",
-      "stars": 4386,
-      "issues": 47,
-      "prs": 26,
-      "openConversations": 73,
-      "heat": 189.5,
+      "stars": 4409,
+      "issues": 48,
+      "prs": 27,
+      "openConversations": 75,
+      "heat": 194.6,
       "starsLabel": "4.4K"
     },
     {
@@ -29,7 +29,7 @@
       "url": "https://github.com/DingTalk-Real-AI/dingtalk-workspace-cli",
       "accent": "#1677FF",
       "description": "Officially open-sourced DingTalk workspace CLI",
-      "stars": 1279,
+      "stars": 1280,
       "issues": 14,
       "prs": 3,
       "openConversations": 17,
@@ -45,44 +45,44 @@
       "url": "https://github.com/WecomTeam/wecom-cli",
       "accent": "#07C160",
       "description": "Enterprise WeChat command line interface",
-      "stars": 724,
+      "stars": 737,
       "issues": 12,
       "prs": 1,
       "openConversations": 13,
       "heat": 29.9,
-      "starsLabel": "724"
+      "starsLabel": "737"
     }
   ],
   "summary": {
-    "totalStars": 6389,
-    "totalIssues": 73,
-    "totalPrs": 30,
+    "totalStars": 6426,
+    "totalIssues": 74,
+    "totalPrs": 31,
     "totalRepos": 3,
     "starLeader": "larksuite/cli",
     "hottestRepo": "larksuite/cli"
   },
   "history": [
     {
-      "timestamp": "2026-03-30T11:48:35.595Z",
+      "timestamp": "2026-03-30T12:06:54.023Z",
       "repos": [
         {
           "id": "feishu",
           "label": "飞书",
-          "stars": 4386,
-          "issues": 47,
-          "prs": 26
+          "stars": 4409,
+          "issues": 48,
+          "prs": 27
         },
         {
           "id": "dingtalk",
           "label": "钉钉",
-          "stars": 1279,
+          "stars": 1280,
           "issues": 14,
           "prs": 3
         },
         {
           "id": "wecom",
           "label": "企微",
-          "stars": 724,
+          "stars": 737,
           "issues": 12,
           "prs": 1
         }
@@ -90,7 +90,7 @@
     }
   ],
   "starHistory": {
-    "fetchedAt": "2026-03-30T11:48:38.378Z",
+    "fetchedAt": "2026-03-30T12:06:56.717Z",
     "refreshIntervalMs": 43200000,
     "source": "star-history.com",
     "sourceUrl": "https://api.star-history.com/svg?repos=larksuite%2Fcli%2Cdingtalk-real-ai%2Fdingtalk-workspace-cli%2Cwecomteam%2Fwecom-cli&type=Date",

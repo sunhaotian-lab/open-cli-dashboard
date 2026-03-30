@@ -411,7 +411,8 @@ async function serveFile(urlPath) {
     return new Response(content, {
       status: 200,
       headers: {
-        "Content-Type": lookupContentType(filePath)
+        "Content-Type": lookupContentType(filePath),
+        "Cache-Control": "no-store"
       }
     });
   } catch (error) {

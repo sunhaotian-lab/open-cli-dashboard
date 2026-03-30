@@ -64,14 +64,12 @@ function renderCards(repos) {
 
       return `
         <article class="repo-card" style="--accent:${repo.accent}">
-          <div class="repo-head">
-            <div>
-              <p class="platform-badge">${repo.platformLabel}</p>
-              <h3>${repo.name}</h3>
-            </div>
-            <a href="${repo.url}" target="_blank" rel="noreferrer">${repo.slug}</a>
+          <div class="repo-topline">
+            <p class="platform-badge">${repo.platformLabel}</p>
+            <a class="repo-slug" href="${repo.url}" target="_blank" rel="noreferrer">${repo.slug}</a>
           </div>
 
+          <h3 class="repo-title">${repo.name}</h3>
           <p class="repo-description">${repo.description}</p>
 
           <div class="metric-grid">
